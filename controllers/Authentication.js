@@ -58,14 +58,14 @@ const handleLogin = async (req, res) => {
                     admin: foundUser.isAdmin,
                 },
                 process.env.JWT_SEC,
-                { expiresIn: "20s" }
+                { expiresIn: "30s" }
             )
 
             // Create refresh token
             const newRefreshToken = jwt.sign(
                 { username: foundUser.username },
                 process.env.JWT_SEC,
-                { expiresIn: "30s" }
+                { expiresIn: "1m" }
             )
 
             const newRefreshTokenArray = !cookies?.jwt
@@ -189,8 +189,6 @@ const handleRefreshToken = async (req, res) => {
 }
 
 const handleLogout = async (req, res) => {
-    // res.status(201).json("Logout")
-
     try {
         const cookies = req.cookies
         if (!cookies?.jwt) return res.sendStatus(204) //No content
@@ -261,7 +259,7 @@ const handleResetPassword = async (req, res) => {
     const cookie = req.cookies
     if (!cookie.resetToken) res.status(401).json("Invalid link")
 
-    const resetToken = cookie.refreshToken
+    const resetToken = cookie.resetToken
 
     res.clearCookie("resetToken", { httpOnly: true, sameSite: "None" })
 
